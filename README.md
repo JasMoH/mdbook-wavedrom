@@ -39,27 +39,27 @@ cargo install mdbook-wavedrom
 Then let `mdbook-wavedrom` add the required files and configuration:
 
 ```
-mdbook-mermaid install path/to/your/book
+mdbook-wavedrom install path/to/your/book
 ```
 
 
 This will add the following configuration to your `book.toml`:
 
 ```toml
-[preprocessor.mermaid]
+[preprocessor.wavedrom]
 command = "mdbook-wavedrom"
 
 [output.html]
-additional-js = ["wavedrom.min.js", "wavedrom-init.js"]
+additional-js = ["wavedrom.min.js", "wavedrom-default.js"]
 ```
 
-It will skip any unnecessary changes and detect if `mdbook-mermaid` was already configured.
+It will skip any unnecessary changes and detect if `mdbook-wavedrom` was already configured.
 
-Additionally it copies the files `mermaid.min.js` and  `mermaid-init.js` into your book's directory.
+Additionally it copies the files `wavedrom.min.js` and  `wavedrom-default.js` into your book's directory.
 You find these files in the [`src/bin/assets`](src/bin/assets) directory.
-You can modify `mermaid-init.js` to configure Mermaid, see the [Mermaid documentation] for all options.
+You can modify `wavedrom-defalut.js` to configure wavedrom, see the [wavedrom documentation] for all options.
 
-[Mermaid documentation]: https://mermaid-js.github.io/mermaid/#/Setup?id=mermaidapi-configuration-defaults
+[wavedrom documentation]: https://github.com/wavedrom/wavedrom
 
 Finally, build your book:
 
@@ -70,7 +70,3 @@ mdbook path/to/book
 ## License
 
 MPL. See [LICENSE](LICENSE).  
-Copyright (c) 2018-2021 Jan-Erik Rediger <janerik@fnordig.de>
-
-Mermaid is [MIT licensed](https://github.com/knsv/mermaid/blob/master/LICENSE).
-The bundled assets (`mermaid.min.js`) are MIT licensed.
