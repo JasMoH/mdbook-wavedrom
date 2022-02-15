@@ -1,9 +1,9 @@
 [book]
-title = "mdbook-mermaid fully configured"
+title = "mdbook-wavedrom fully configured"
 
-[preprocessor.mermaid]
-command = "mdbook-mermaid"
+[preprocessor.wavedrom]
+command = "mdbook-wavedrom"
 renderer = ["html"]
 
 [output.html]
-additional-js =["mermaid.min.js", "mermaid-init.js"]
+additional-js =["wavedrom.min.js", "wavedrome-default.js"]

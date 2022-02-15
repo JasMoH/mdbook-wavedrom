@@ -884,7 +884,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mdbook-mermaid"
+name = "mdbook-wavedrom"
 version = "0.10.0"
 dependencies = [
  "assert_cmd",

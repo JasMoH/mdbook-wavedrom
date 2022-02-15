@@ -1,5 +1,5 @@
 [book]
 title = "Some configuration options are set"
 
-[preprocessor.mermaid]
-command = "mdbook-mermaid"
+[preprocessor.wavedrom]
+command = "mdbook-wavedrom"

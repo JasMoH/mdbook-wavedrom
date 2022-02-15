@@ -1,12 +1,12 @@
 [book]
-title = "All mermaid config options missing"
+title = "All wavedrom config options missing"
 
 [preprocessor]
 
-[preprocessor.mermaid]
-command = "mdbook-mermaid"
+[preprocessor.wavedrom]
+command = "mdbook-wavedrom"
 
 [output]
 
 [output.html]
-additional-js = ["mermaid.min.js", "mermaid-init.js"]
+additional-js = ["wavedrom.min.js", "wavedrome-default.js"]

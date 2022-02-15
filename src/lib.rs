@@ -3,11 +3,11 @@ use mdbook::errors::Result;
 use mdbook::preprocess::{Preprocessor, PreprocessorContext};
 use pulldown_cmark::{CodeBlockKind::*, Event, Options, Parser, Tag};
 
-pub struct Mermaid;
+pub struct Wavedrom;
 
-impl Preprocessor for Mermaid {
+impl Preprocessor for Wavedrom {
     fn name(&self) -> &str {
-        "mermaid"
+        "wavedrom"
     }
 
     fn run(&self, _ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
@@ -18,7 +18,7 @@ impl Preprocessor for Mermaid {
             }
 
             if let BookItem::Chapter(ref mut chapter) = *item {
-                res = Some(Mermaid::add_mermaid(chapter).map(|md| {
+                res = Some(Wavedrom::add_wavedrom(chapter).map(|md| {
                     chapter.content = md;
                 }));
             }
@@ -46,9 +46,9 @@ fn escape_html(s: &str) -> String {
     output
 }
 
-fn add_mermaid(content: &str) -> Result<String> {
-    let mut mermaid_content = String::new();
-    let mut in_mermaid_block = false;
+fn add_wavedrom(content: &str) -> Result<String> {
+    let mut wavedrom_content = String::new();
+    let mut in_wavedrom_block = false;
 
     let mut opts = Options::empty();
     opts.insert(Options::ENABLE_TABLES);
@@ -56,44 +56,44 @@ fn add_mermaid(content: &str) -> Result<String> {
     opts.insert(Options::ENABLE_STRIKETHROUGH);
     opts.insert(Options::ENABLE_TASKLISTS);
 
-    let mut mermaid_start = 0..0;
+    let mut wavedrom_start = 0..0;
 
-    let mut mermaid_blocks = vec![];
+    let mut wavedrom_blocks = vec![];
 
     let events = Parser::new_ext(content, opts);
     for (e, span) in events.into_offset_iter() {
         if let Event::Start(Tag::CodeBlock(Fenced(code))) = e.clone() {
             log::debug!("e={:?}, span={:?}", e, span);
-            if &*code == "mermaid" {
-                mermaid_start = span;
-                in_mermaid_block = true;
-                mermaid_content.clear();
+            if &*code == "wavedrom" {
+                wavedrom_start = span;
+                in_wavedrom_block = true;
+                wavedrom_content.clear();
             }
             continue;
         }
 
-        if !in_mermaid_block {
+        if !in_wavedrom_block {
             continue;
         }
 
         if let Event::End(Tag::CodeBlock(Fenced(code))) = e {
             assert_eq!(
-                "mermaid", &*code,
-                "After an opening mermaid code block we expect it to close again"
+                "wavedrom", &*code,
+                "After an opening wavedrom code block we expect it to close again"
             );
-            in_mermaid_block = false;
-            let pre = "```mermaid\n";
+            in_wavedrom_block = false;
+            let pre = "```wavedrom\n";
             let post = "```";
 
-            let mermaid_content = &content[mermaid_start.start + pre.len()..span.end - post.len()];
-            let mermaid_content = escape_html(mermaid_content);
-            let mermaid_code = format!("<pre class=\"mermaid\">{}</pre>\n\n", mermaid_content);
-            mermaid_blocks.push((mermaid_start.start..span.end, mermaid_code.clone()));
+            let wavedrom_content = &content[wavedrom_start.start + pre.len()..span.end - post.len()];
+            let wavedrom_content = escape_html(wavedrom_content);
+            let wavedrom_code = format!("<body onload=\"WaveDrom.ProcessAll()\">\n\n<script type=\"WaveDrom\">{}</script>\n\n", wavedrom_content);
+            wavedrom_blocks.push((wavedrom_start.start..span.end, wavedrom_code.clone()));
         }
     }
 
     let mut content = content.to_string();
-    for (span, block) in mermaid_blocks.iter().rev() {
+    for (span, block) in wavedrom_blocks.iter().rev() {
         let pre_content = &content[0..span.start];
         let post_content = &content[span.end..];
         content = format!("{}\n{}{}", pre_content, block, post_content);
@@ -101,9 +101,9 @@ fn add_mermaid(content: &str) -> Result<String> {
     Ok(content)
 }
 
-impl Mermaid {
-    fn add_mermaid(chapter: &mut Chapter) -> Result<String> {
-        add_mermaid(&chapter.content)
+impl Wavedrom {
+    fn add_wavedrom(chapter: &mut Chapter) -> Result<String> {
+        add_wavedrom(&chapter.content)
     }
 }
 
@@ -111,15 +111,16 @@ impl Mermaid {
 mod test {
     use pretty_assertions::assert_eq;
 
-    use super::add_mermaid;
+    use super::add_wavedrom;
 
     #[test]
-    fn adds_mermaid() {
+    fn adds_wavedrom() {
         let content = r#"# Chapter
 
-```mermaid
-graph TD
-A --> B
+```wavedrom
+{signal: [
+  {name: 'clk', wave: 'p.....|...'}
+]}
 ```
 
 Text
@@ -128,16 +129,19 @@ Text
         let expected = r#"# Chapter
 
 
-<pre class="mermaid">graph TD
-A --&gt; B
-</pre>
+<body onload="WaveDrom.ProcessAll()">
+
+<script type="WaveDrom">{signal: [
+  {name: 'clk', wave: 'p.....|...'}
+]}
+</script>
 
 
 
 Text
 "#;
 
-        assert_eq!(expected, add_mermaid(content).unwrap());
+        assert_eq!(expected, add_wavedrom(content).unwrap());
     }
 
     #[test]
@@ -159,7 +163,7 @@ Text
 | Row 1  | Row 2  |
 "#;
 
-        assert_eq!(expected, add_mermaid(content).unwrap());
+        assert_eq!(expected, add_wavedrom(content).unwrap());
     }
 
     #[test]
@@ -185,7 +189,7 @@ Text
 </del>
 "#;
 
-        assert_eq!(expected, add_mermaid(content).unwrap());
+        assert_eq!(expected, add_wavedrom(content).unwrap());
     }
 
     #[test]
@@ -211,14 +215,14 @@ Text
 2. paragraph 2
 "#;
 
-        assert_eq!(expected, add_mermaid(content).unwrap());
+        assert_eq!(expected, add_wavedrom(content).unwrap());
     }
 
     #[test]
-    fn escape_in_mermaid_block() {
+    fn escape_in_wavedrom_block() {
         env_logger::init();
         let content = r#"
-```mermaid
+```wavedrom
 classDiagram
     class PingUploader {
         <<interface>>
@@ -231,18 +235,25 @@ hello
 
         let expected = r#"
 
-<pre class="mermaid">classDiagram
+<body onload="WaveDrom.ProcessAll()">
+
+<script type="WaveDrom">classDiagram
     class PingUploader {
         &lt;&lt;interface&gt;&gt;
         +Upload() UploadResult
     }
-</pre>
+</script>
 
 
 
 hello
 "#;
 
-        assert_eq!(expected, add_mermaid(content).unwrap());
+        assert_eq!(expected, add_wavedrom(content).unwrap());
     }
+
+//    #[test]
+//    fn adds_body_onload() {
+//        assert_eq!(1,2);
+//    }
 }

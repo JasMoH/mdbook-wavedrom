@@ -1,11 +1,11 @@
 [package]
-name = "mdbook-mermaid"
+name = "mdbook-wavedrom"
 version = "0.10.0"
-authors = ["Jan-Erik Rediger <janerik@fnordig.de>"]
+authors = ["Jason Morelli-Harlan <jmorelliharlan@gmail.com>"]
 description = "mdbook preprocessor to add mermaid support"
 license = "MPL-2.0"
-homepage = "https://github.com/badboy/mdbook-mermaid"
-repository = "https://github.com/badboy/mdbook-mermaid"
+homepage = "https://github.com/JasMoH/mdbook-wavedrom"
+repository = "https://github.com/JasMoH/mdbook-wavedrom"
 edition = "2018"
 
 [dependencies]

@@ -1,38 +1,42 @@
-# mdbook-mermaid
+# mdbook-wavedrom
 
-A preprocessor for [mdbook][] to add [mermaid.js][] support.
+A preprocessor for [mdbook][] to add [wavedrom][] support.
+This is based diretly on [mdbook-mermaid][], and is basically just a search/replace.
 
 [mdbook]: https://github.com/rust-lang-nursery/mdBook
-[mermaid.js]: https://mermaidjs.github.io/
+[wavedrom]: https://github.com/wavedrom/wavedrom
+[mdbook-mermaid]: https://github.com/badboy/mdbook-mermaid
 
 It turns this:
 
 ~~~
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+```wavedrom
+{signal: [
+  {name: 'clk', wave: 'p.....|...'},
+  {name: 'dat', wave: 'x.345x|=.x', data: ['head', 'body', 'tail', 'data']},
+  {name: 'req', wave: '0.1..0|1.0'},
+  {},
+  {name: 'ack', wave: '1.....|01.'}
+]}
 ```
 ~~~
 
 into this:
 
-![Simple Graph](simple-graph.png)
+![Simple Graph](example-diagram.png)
 
 in your book.
-(Graph provided by [Mermaid Live Editor](https://mermaidjs.github.io/mermaid-live-editor/#/view/eyJjb2RlIjoiZ3JhcGggVEQ7XG4gICAgQS0tPkI7XG4gICAgQS0tPkM7XG4gICAgQi0tPkQ7XG4gICAgQy0tPkQ7IiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifX0))
+(Graph provided by [wavedrom Live Editor](https://wavedrom.com/editor.html)
 
 ## Installation
 
 If you want to use only this preprocessor, install the tool:
 
 ```
-cargo install mdbook-mermaid
+cargo install mdbook-wavedrom
 ```
 
-Then let `mdbook-mermaid` add the required files and configuration:
+Then let `mdbook-wavedrom` add the required files and configuration:
 
 ```
 mdbook-mermaid install path/to/your/book
@@ -43,10 +47,10 @@ This will add the following configuration to your `book.toml`:
 
 ```toml
 [preprocessor.mermaid]
-command = "mdbook-mermaid"
+command = "mdbook-wavedrom"
 
 [output.html]
-additional-js = ["mermaid.min.js", "mermaid-init.js"]
+additional-js = ["wavedrom.min.js", "wavedrom-init.js"]
 ```
 
 It will skip any unnecessary changes and detect if `mdbook-mermaid` was already configured.
